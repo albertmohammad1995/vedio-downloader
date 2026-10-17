@@ -16,7 +16,8 @@ export default {
     }
 
     try {
-      const cobaltRes = await fetch('https://api.cobalt.tools/api/json', {
+      // অল্টারনেটিভ রিলায়েবল এপিআই ব্যবহার করা হলো
+      const apiRes = await fetch(`https://co.wuk.sh/api/json`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -25,11 +26,11 @@ export default {
         },
         body: JSON.stringify({
           url: videoUrl,
-          videoQuality: '720'
+          vQuality: '720'
         })
       });
 
-      const data = await cobaltRes.json();
+      const data = await apiRes.json();
       let directLink = null;
 
       if (data) {
