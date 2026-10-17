@@ -20,7 +20,8 @@ export default {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'Mozilla/5.0'
         },
         body: JSON.stringify({
           url: videoUrl,
@@ -29,13 +30,19 @@ export default {
       });
 
       const data = await cobaltRes.json();
+      let directLink = null;
 
-      if (data && (data.url || data.picker)) {
-        let directLink = data.url;
-        if (!directLink && data.picker && data.picker.length > 0) {
+      if (data) {
+        if (data.url) {
+          directLink = data.url;
+        } else if (data.picker && data.picker.length > 0) {
           directLink = data.picker[0].url;
+        } else if (data.tunnel) {
+          directLink = data.tunnel;
         }
+      }
 
+      if (directLink) {
         return new Response(JSON.stringify({
           success: true,
           download_url: directLink
@@ -48,7 +55,8 @@ export default {
       } else {
         return new Response(JSON.stringify({
           success: false,
-          error: "Could not extract"
+          error: "Could not extract link",
+          details: data
         }), {
           headers: { 
             'Content-Type': 'application/json',
